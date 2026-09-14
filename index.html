@@ -366,6 +366,54 @@ h2+p,h3+p{margin-top:16px}
 .wa-float svg{width:30px;height:30px;fill:#fff}
 @media (max-width:768px){.wa-float{display:none}}
 
+/* ─── Burbuja de chat (chatbot) ───────────────────────────────────── */
+.chat-fab{position:fixed;right:20px;bottom:20px;z-index:75;width:60px;height:60px;border-radius:50%;border:0;cursor:pointer;background:var(--brand);color:#fff;display:grid;place-items:center;box-shadow:0 14px 30px -10px rgba(31,111,209,.8);transition:transform .25s var(--ease),background .2s}
+.chat-fab:hover{transform:scale(1.07);background:var(--brand-d)}
+.chat-fab svg{width:27px;height:27px;grid-area:1/1;transition:opacity .2s,transform .3s var(--ease)}
+.chat-fab .ic-close{opacity:0;transform:rotate(-90deg)}
+.chat-fab[aria-expanded="true"] .ic-open{opacity:0;transform:rotate(90deg)}
+.chat-fab[aria-expanded="true"] .ic-close{opacity:1;transform:none}
+.chat-fab__dot{position:absolute;top:3px;right:3px;width:13px;height:13px;border-radius:50%;background:#22C55E;border:2.5px solid #fff}
+.chat-fab[aria-expanded="true"] .chat-fab__dot{display:none}
+body.chat-open .wa-float{display:none}
+.wa-float{bottom:92px}
+.chat{position:fixed;right:20px;bottom:92px;z-index:80;width:370px;max-width:calc(100vw - 32px);height:min(560px,calc(100vh - 124px));background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:0 30px 70px -24px rgba(15,30,51,.45);display:flex;flex-direction:column;overflow:hidden;
+  opacity:0;visibility:hidden;transform:translateY(14px) scale(.98);transform-origin:bottom right;transition:opacity .22s,transform .28s var(--ease),visibility 0s linear .28s}
+.chat.is-open{opacity:1;visibility:visible;transform:none;transition:opacity .22s,transform .28s var(--ease)}
+.chat__hdr{display:flex;align-items:center;gap:12px;padding:16px 16px 16px 18px;background:linear-gradient(140deg,var(--brand-d),#0E3F80);color:#fff}
+.chat__av{width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.16);display:grid;place-items:center;flex:none}
+.chat__av svg{width:22px;height:22px}
+.chat__hdr b{display:block;font-size:.95rem;line-height:1.2}
+.chat__hdr small{display:inline-flex;align-items:center;gap:6px;font-size:.75rem;color:rgba(255,255,255,.82)}
+.chat__hdr small::before{content:"";width:7px;height:7px;border-radius:50%;background:#4ADE80}
+.chat__x{margin-left:auto;width:34px;height:34px;border-radius:10px;border:0;background:rgba(255,255,255,.12);color:#fff;cursor:pointer;display:grid;place-items:center}
+.chat__x:hover{background:rgba(255,255,255,.22)}
+.chat__x svg{width:18px;height:18px}
+.chat__body{flex:1;overflow-y:auto;padding:18px 16px;display:flex;flex-direction:column;gap:10px;background:var(--bg-soft)}
+.msg{max-width:84%;padding:10px 14px;border-radius:16px;font-size:.9rem;line-height:1.5;white-space:pre-wrap;word-wrap:break-word}
+.msg--bot{align-self:flex-start;background:#fff;border:1px solid var(--line);border-bottom-left-radius:5px;color:var(--ink)}
+.msg--user{align-self:flex-end;background:var(--brand);color:#fff;border-bottom-right-radius:5px}
+.msg--typing{display:inline-flex;gap:4px;padding:13px 15px}
+.msg--typing i{width:7px;height:7px;border-radius:50%;background:var(--muted);animation:chatDot 1.2s infinite ease-in-out}
+.msg--typing i:nth-child(2){animation-delay:.15s}
+.msg--typing i:nth-child(3){animation-delay:.3s}
+@keyframes chatDot{0%,60%,100%{opacity:.3;transform:translateY(0)}30%{opacity:1;transform:translateY(-3px)}}
+.chat__quick{display:flex;flex-wrap:wrap;gap:7px;margin-top:4px}
+.chat__quick button{font:inherit;font-size:.8rem;font-weight:700;padding:7px 12px;border-radius:99px;border:1.5px solid var(--brand-l);background:#fff;color:var(--brand-d);cursor:pointer;transition:background .18s,border-color .18s}
+.chat__quick button:hover{background:var(--brand-l);border-color:var(--brand)}
+.chat__form{display:flex;gap:8px;padding:12px;border-top:1px solid var(--line);background:#fff}
+.chat__form input{flex:1;min-width:0;font:inherit;font-size:.92rem;padding:11px 14px;border:1.5px solid var(--line);border-radius:99px;outline:0;color:var(--ink)}
+.chat__form input:focus{border-color:var(--brand)}
+.chat__form button{width:44px;height:44px;flex:none;border-radius:50%;border:0;background:var(--brand);color:#fff;cursor:pointer;display:grid;place-items:center;transition:background .18s}
+.chat__form button:hover{background:var(--brand-d)}
+.chat__form button:disabled{opacity:.5;cursor:default}
+.chat__form button svg{width:19px;height:19px}
+.chat__note{font-size:.68rem;color:var(--muted);text-align:center;padding:0 12px 10px;background:#fff;margin:0}
+@media (max-width:768px){
+  .chat-fab{right:16px;bottom:calc(84px + env(safe-area-inset-bottom));width:56px;height:56px}
+  .chat{right:12px;left:12px;width:auto;max-width:none;bottom:calc(152px + env(safe-area-inset-bottom));height:calc(100vh - 240px);height:calc(100dvh - 240px - env(safe-area-inset-bottom))}
+}
+
 /* ─── Modal legal ─────────────────────────────────────────────────── */
 dialog.legal{border:0;border-radius:var(--r);padding:0;max-width:720px;width:calc(100% - 32px);box-shadow:0 40px 90px -30px rgba(15,30,51,.6);color:var(--ink)}
 dialog.legal::backdrop{background:rgba(11,26,46,.55)}
@@ -875,6 +923,35 @@ dialog.legal::backdrop{background:rgba(11,26,46,.55)}
   <a class="btn btn--ghost" data-tel href="#">Llamar</a>
 </div>
 
+<!-- ═══════════ Chatbot (solo interfaz; la conexión va en el JS, sección 9) ═══════════ -->
+<button class="chat-fab" id="chat-fab" type="button" aria-expanded="false" aria-controls="chat" aria-label="Abrir chat">
+  <svg class="ic-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9 9 0 0 1-3.9-.9L3 20.5l1.4-4.3A8.2 8.2 0 0 1 3 11.5 8.5 8.5 0 0 1 12 3a8.5 8.5 0 0 1 9 8.5z"/><path d="M8 11.5h.01M12 11.5h.01M16 11.5h.01" stroke-width="2.6"/></svg>
+  <svg class="ic-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+  <span class="chat-fab__dot" aria-hidden="true"></span>
+</button>
+
+<section class="chat" id="chat" role="dialog" aria-label="Chat con Swiss Dental" aria-hidden="true">
+  <header class="chat__hdr">
+    <span class="chat__av" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 4.2C10.4 3 8.6 2.4 6.9 2.9 4.6 3.6 3.4 6 3.6 8.7c.2 2.5 1 4.3 1.5 6.4.4 1.7.6 3.4 1 4.6.4 1.2 1.5 1.6 2.2.9.8-.8.8-2.6 1.2-4.3.3-1.4.9-2.3 2.5-2.3s2.2.9 2.5 2.3c.4 1.7.4 3.5 1.2 4.3.7.7 1.8.3 2.2-.9.4-1.2.6-2.9 1-4.6.5-2.1 1.3-3.9 1.5-6.4.2-2.7-1-5.1-3.3-5.8-1.7-.5-3.5.1-5.1 1.3Z"/></svg></span>
+    <div><b>Asistente Swiss Dental</b><small>En línea</small></div>
+    <button class="chat__x" id="chat-x" type="button" aria-label="Cerrar chat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+  </header>
+  <div class="chat__body" id="chat-body" aria-live="polite">
+    <div class="msg msg--bot">¡Hola! 👋 Soy el asistente de Swiss Dental. ¿En qué te puedo ayudar?</div>
+    <div class="chat__quick" id="chat-quick">
+      <button type="button">Agendar una cita</button>
+      <button type="button">Horarios</button>
+      <button type="button">Ubicación</button>
+      <button type="button">Servicios</button>
+    </div>
+  </div>
+  <form class="chat__form" id="chat-form" autocomplete="off">
+    <input id="chat-input" type="text" placeholder="Escribe tu mensaje…" aria-label="Escribe tu mensaje" maxlength="500">
+    <button type="submit" aria-label="Enviar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg></button>
+  </form>
+  <p class="chat__note">Asistente virtual. Para urgencias llama al consultorio.</p>
+</section>
+
 <!-- ═══════════ Avisos legales (EDITAR con tus datos fiscales) ═══════════ -->
 <dialog class="legal" id="dlg-privacidad">
   <div class="legal__in">
@@ -1079,6 +1156,72 @@ if ("IntersectionObserver" in window) {
 } else {
   document.querySelectorAll(".rv").forEach(el => el.classList.add("in"));
 }
+
+/* ══════════════════════════════════════════════════════════════════════
+   9 · Chatbot (burbuja)
+   EDITAR: para conectar el chatbot, reemplaza el cuerpo de responderBot().
+   Recibe el texto del usuario y debe devolver (Promise) el texto de respuesta,
+   p. ej.: return fetch("/api/chat", {method:"POST", body: JSON.stringify({texto})})
+             .then(r => r.json()).then(d => d.respuesta);
+   ══════════════════════════════════════════════════════════════════════ */
+function responderBot(texto){
+  return new Promise(res => setTimeout(() => res(
+    "Gracias por tu mensaje. Muy pronto podré responderte por aquí. Mientras tanto, escríbenos por WhatsApp o llámanos al " + CONFIG.telefonoTxt + "."
+  ), 900));
+}
+
+(function chat(){
+  const fab = document.getElementById("chat-fab");
+  const panel = document.getElementById("chat");
+  const body = document.getElementById("chat-body");
+  const form = document.getElementById("chat-form");
+  const input = document.getElementById("chat-input");
+  const quick = document.getElementById("chat-quick");
+  const sendBtn = form.querySelector("button");
+
+  function setOpen(open){
+    panel.classList.toggle("is-open", open);
+    panel.setAttribute("aria-hidden", String(!open));
+    fab.setAttribute("aria-expanded", String(open));
+    fab.setAttribute("aria-label", open ? "Cerrar chat" : "Abrir chat");
+    document.body.classList.toggle("chat-open", open);
+    if (open) setTimeout(() => input.focus(), 150); else fab.focus();
+  }
+  fab.addEventListener("click", () => setOpen(!panel.classList.contains("is-open")));
+  document.getElementById("chat-x").addEventListener("click", () => setOpen(false));
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && panel.classList.contains("is-open")) setOpen(false); });
+
+  function addMsg(texto, quien){
+    const el = document.createElement("div");
+    el.className = "msg msg--" + quien;
+    el.textContent = texto;
+    body.appendChild(el);
+    body.scrollTop = body.scrollHeight;
+    return el;
+  }
+
+  async function enviar(texto){
+    texto = texto.trim();
+    if (!texto) return;
+    if (quick) quick.remove();
+    addMsg(texto, "user");
+    input.value = ""; sendBtn.disabled = true;
+    const typing = addMsg("", "bot");
+    typing.classList.add("msg--typing");
+    typing.innerHTML = "<i></i><i></i><i></i>";
+    try {
+      const respuesta = await responderBot(texto);
+      typing.remove(); addMsg(respuesta, "bot");
+    } catch (err) {
+      typing.remove(); addMsg("Ocurrió un problema. Intenta de nuevo o escríbenos por WhatsApp.", "bot");
+    } finally {
+      sendBtn.disabled = false; input.focus();
+    }
+  }
+
+  form.addEventListener("submit", e => { e.preventDefault(); enviar(input.value); });
+  if (quick) quick.querySelectorAll("button").forEach(b => b.addEventListener("click", () => enviar(b.textContent)));
+})();
 </script>
 
 <!-- ══════════════════════════════════════════════════════════════════════
