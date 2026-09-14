@@ -1206,7 +1206,6 @@ async function responderBot(texto){
   const form = document.getElementById("chat-form");
   const input = document.getElementById("chat-input");
   const quick = document.getElementById("chat-quick");
-  const sendBtn = form.querySelector("button");
 
   function setOpen(open){
     panel.classList.toggle("is-open", open);
@@ -1239,18 +1238,49 @@ async function responderBot(texto){
   const pausa = ms => new Promise(r => setTimeout(r, ms));
   let yaAvisadoHumano = false;
 
-  async function enviar(texto){
-    texto = texto.trim();
-    if (!texto || sendBtn.disabled) return;
-    if (quick) quick.remove();
-    addMsg(texto, "user");
-    input.value = ""; sendBtn.disabled = true;
-    const typing = addMsg("", "bot");
-    typing.classList.add("msg--typing");
-    typing.innerHTML = "<i></i><i></i><i></i>";
+  /* Buffer de mensajes: el usuario puede mandar varios mensajes seguidos.
+     Se juntan y se envían al bot como un solo bloque cuando deja de escribir
+     BUFFER_MS (o al llegar a MAX_WAIT_MS desde el primero). Si escribe
+     mientras el bot contesta, esos mensajes forman el siguiente bloque. */
+  const BUFFER_MS = 3500;
+  const MAX_WAIT_MS = 12000;
+  const MAX_CHARS = 1800;          // el bot acepta hasta 2000 caracteres por envío
+  let pendientes = [];
+  let primeroEn = 0;
+  let timer = null;
+  let enCurso = false;
+  let typing = null;
+
+  function mostrarTyping(){
+    if (!typing) {
+      typing = document.createElement("div");
+      typing.className = "msg msg--bot msg--typing";
+      typing.innerHTML = "<i></i><i></i><i></i>";
+    }
+    body.appendChild(typing);          // siempre al final del chat
+    body.scrollTop = body.scrollHeight;
+  }
+  function ocultarTyping(){ if (typing) typing.remove(); }
+
+  function programarEnvio(){
+    clearTimeout(timer);
+    if (!pendientes.length || enCurso) return;
+    if (!primeroEn) primeroEn = Date.now();
+    const largo = pendientes.join("\n").length;
+    const restante = MAX_WAIT_MS - (Date.now() - primeroEn);
+    const espera = largo >= MAX_CHARS ? 0 : Math.max(0, Math.min(BUFFER_MS, restante));
+    timer = setTimeout(enviarLote, espera);
+  }
+
+  async function enviarLote(){
+    if (enCurso || !pendientes.length) return;
+    enCurso = true;
+    const lote = pendientes.splice(0).join("\n");
+    primeroEn = 0;
+    mostrarTyping();
     try {
-      const mensajes = await responderBot(texto);
-      typing.remove();
+      const mensajes = await responderBot(lote);
+      ocultarTyping();
       if (!mensajes.length) {
         if (!yaAvisadoHumano) {
           addMsg("Recibimos tu mensaje. Una persona del consultorio te responderá por aquí en breve.", "bot");
@@ -1263,12 +1293,30 @@ async function responderBot(texto){
         }
       }
     } catch (err) {
-      typing.remove();
+      ocultarTyping();
       addMsg("Ocurrió un problema. Intenta de nuevo o escríbenos por WhatsApp o al " + CONFIG.telefonoTxt + ".", "bot");
     } finally {
-      sendBtn.disabled = false; input.focus();
+      enCurso = false;
+      if (pendientes.length) { mostrarTyping(); programarEnvio(); }
     }
   }
+
+  function enviar(texto){
+    texto = texto.trim();
+    if (!texto) return;
+    if (quick) quick.remove();
+    addMsg(texto, "user");
+    input.value = "";
+    pendientes.push(texto);
+    mostrarTyping();
+    programarEnvio();
+    input.focus();
+  }
+
+  // Mientras el usuario sigue escribiendo, se espera a que termine su bloque.
+  input.addEventListener("input", () => {
+    if (pendientes.length && !enCurso && input.value.trim()) programarEnvio();
+  });
 
   form.addEventListener("submit", e => { e.preventDefault(); enviar(input.value); });
   // Enter envía siempre (algunos navegadores/teclados no disparan el submit implícito).
