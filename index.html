@@ -1271,6 +1271,10 @@ async function responderBot(texto){
   }
 
   form.addEventListener("submit", e => { e.preventDefault(); enviar(input.value); });
+  // Enter envía siempre (algunos navegadores/teclados no disparan el submit implícito).
+  input.addEventListener("keydown", e => {
+    if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); enviar(input.value); }
+  });
   if (quick) quick.querySelectorAll("button").forEach(b => b.addEventListener("click", () => enviar(b.textContent)));
 })();
 </script>
